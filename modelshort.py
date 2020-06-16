@@ -4,7 +4,7 @@ import math
 
 # processed train data
 family_content = []
-df = pd.read_csv(r'C:\Users\User-PC\Downloads\titanic_machine_learning\train.csv')
+df = pd.read_csv(r'C:\Users\User-PC\Downloads\titanic_machine_learning\test.csv')
 df = df.drop(['Name', 'Ticket', 'Cabin'], axis='columns')
 
 for i in range(len(df.PassengerId)):
