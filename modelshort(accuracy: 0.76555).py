@@ -4,7 +4,7 @@ import math
 
 # processed train data
 family_content = []
-df = pd.read_csv(r'C:\Users\User-PC\Downloads\titanic_machine_learning\train.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/dragonwarrior01135689319/train.csv/master/train.csv')
 df = df.drop(['Name', 'Ticket', 'Cabin'], axis='columns')
 
 for i in range(len(df.PassengerId)):
@@ -21,16 +21,15 @@ df = df.drop(['C', 'female'], axis='columns')
 
 df['Age'] = df['Age'].fillna(math.floor(df.Age.median()))
 # processed train data
-
 # fitting models into LogisticRegression
 model = LogisticRegression()
-model.fit(df[['Pclass', 'Age', 'Fare', 'Family', 'Q', 'S', 'male']], df.Survived)
+model.fit(df.drop(['PassengerId','Survived'],axis='columns'), df.Survived)
 # fitting models into LogisticRegression
 # can test with "print(model.predict([[3,22,22,2,1,0,0]]))"
 
 # processed test data
 family_content = []
-df = pd.read_csv(r'C:\Users\User-PC\Downloads\titanic_machine_learning\test.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/dragonwarrior01135689319/train.csv/master/test.csv')
 df = df.drop(['Name', 'Ticket', 'Cabin'], axis='columns')
 
 for i in range(len(df.PassengerId)):
@@ -59,16 +58,9 @@ df['Age'] = df['Age'].fillna(math.floor(df.Age.median()))
 #df.Fare[152]=nan
 
 df['Fare'] = df['Fare'].fillna(math.floor(df.Fare.median()))
-
 # predicting results
-resultId = []
-resultSur = []
-for i in range(len(df.PassengerId)):
-    resultId.append(df.PassengerId[i])
-    resultSur.append(
-        math.floor(model.predict([[df.Pclass[i], df.Age[i], df.Fare[i], df.Family[i], df.Q[i], df.S[i], df.male[i]]])))
 
-result = pd.DataFrame({'PassengerId': resultId, 'Survived': resultSur})
-print(result)
+test=df.drop(['PassengerId'],axis='columns')
+result=pd.DataFrame({'PassengerId':df.PassengerId,'Survived':model.predict(test)})
+
 result.to_csv(r'C:\Users\User-PC\Downloads\titanic_machine_learning\result.csv', index=False)
-# predicting results
