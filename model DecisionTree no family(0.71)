@@ -1,0 +1,48 @@
+import pandas as pd
+import math
+
+# processed train data
+df = pd.read_csv('https://raw.githubusercontent.com/dragonwarrior01135689319/train.csv/master/train.csv')
+df = df.drop(['Name', 'Ticket', 'Cabin','SibSp','Parch','Embarked'], axis='columns')
+
+dummiesSex = pd.get_dummies(df.Sex)
+
+df = pd.concat([df,dummiesSex],axis='columns')
+df = df.drop(['female','Sex'], axis='columns')
+
+df['Age'] = df['Age'].fillna(math.floor(df.Age.median()))
+# processed train data
+
+from sklearn import tree
+model=tree.DecisionTreeClassifier()
+model.fit(df.drop(['PassengerId','Survived'],axis='columns'),df['Survived'])
+
+# processed test data
+test = pd.read_csv("https://raw.githubusercontent.com/dragonwarrior01135689319/train.csv/master/test.csv")
+test = test.drop(['Name', 'Ticket', 'Cabin','SibSp','Parch','Embarked'], axis='columns')
+
+dummiesSex = pd.get_dummies(test.Sex)
+
+test = pd.concat([test,dummiesSex],axis='columns')
+test = test.drop(['female','Sex'], axis='columns')
+
+test['Age'] = test['Age'].fillna(math.floor(test.Age.median()))
+# processed test data
+
+#finding nan spaces in the datasheet(throws error)
+#x=0
+#for i in range(len(df.PassengerId)):
+#    x=x+1
+#    math.floor(model.predict([[df.Pclass[i], df.Age[i], df.Fare[i], df.Family[i], df.Q[i], df.S[i], df.male[i]]]))
+#    print(x)
+#result: when i=152 there's a nan
+#print(df.Pclass[152], df.Age[152], df.Fare[152], df.Family[152], df.Q[152], df.S[152], df.male[152])
+#df.Fare[152]=nan
+
+test['Fare'] = test['Fare'].fillna(math.floor(test.Fare.median()))
+
+x_test=test.drop(['PassengerId'],axis='columns')
+result=model.predict(x_test)
+resultdf=pd.DataFrame({'PassengerId':test.PassengerId,'Survived':result})
+print(resultdf)
+resultdf.to_csv(r'C:\Users\User-PC\Downloads\titanic_machine_learning\result.csv', index=False)
